@@ -24,8 +24,8 @@ Run the jar file:
 
 An in-memory H2 database is used for development. When the application is running, you can view the H2 database console at http://localhost:8080/h2-console/. The connection settings are:
 
-Driver Class: org.h2.Driver
-JDBC URL: jdbc:h2:mem:testdb
-Username: sa
-Password: blank
+Driver Class: org.h2.Driver <br/>
+JDBC URL: jdbc:h2:mem:testdb <br/>
+Username: sa <br/>
+Password: blank <br/>
 
