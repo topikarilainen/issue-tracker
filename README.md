@@ -18,7 +18,7 @@ Create a .jar file (e.g. issuetracker.jar):
 
 Run the jar file:
 
-`java -jar teapot.jar`
+`java -jar issuetracker.jar`
 
 ## Viewing the sample data
 
