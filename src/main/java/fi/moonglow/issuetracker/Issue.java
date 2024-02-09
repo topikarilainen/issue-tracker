@@ -24,6 +24,8 @@ public class Issue {
     @JoinColumn(name = "project_id")
     private Project project;
 
+    public Issue() {}
+
     public Issue(String type, Integer priority, String title, String description, User creator, User assignee,
             String status, Project project) {
         this.type = type;

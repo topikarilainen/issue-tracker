@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -19,11 +20,13 @@ public class Project {
     private String name;
     @Column(unique = true)
     private String abbreviation;
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
     private List<Issue> issues;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "project_users", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
+
+    public Project() {}
 
     public Project(String name, String abbreviation, List<Issue> issues, Set<User> users) {
         this.name = name;
@@ -125,6 +128,18 @@ public class Project {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    // For managing the bidirectional relationship
+    public void addUser(User user) {
+        this.users.add(user);
+        user.getProjects().add(this);
+    }
+
+    // For managing the bidirectional relationship
+    public void removeUser(User user) {
+        this.users.remove(user);
+        user.getProjects().remove(this);
     }
 
 }

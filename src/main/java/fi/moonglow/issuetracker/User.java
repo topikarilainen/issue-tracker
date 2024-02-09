@@ -1,9 +1,11 @@
 package fi.moonglow.issuetracker;
 
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -21,11 +23,13 @@ public class User {
     private List<Issue> createdIssues;
     @OneToMany(mappedBy = "assignee")
     private List<Issue> assignedIssues;
-    @ManyToMany(mappedBy = "users")
-    private List<Project> projects;
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    private Set<Project> projects;
+
+    public User() {}
     
     public User(String username, String fullName, List<Issue> createdIssues, List<Issue> assignedIssues,
-            List<Project> projects) {
+            Set<Project> projects) {
         this.username = username;
         this.fullName = fullName;
         this.createdIssues = createdIssues;
@@ -134,13 +138,24 @@ public class User {
         this.assignedIssues = assignedIssues;
     }
 
-    public List<Project> getProjects() {
+    public Set<Project> getProjects() {
         return projects;
     }
 
-    public void setProjects(List<Project> projects) {
+    public void setProjects(Set<Project> projects) {
         this.projects = projects;
     }
 
-    
+    // For managing the bidirectional relationship
+    public void addProject(Project project) {
+        this.projects.add(project);
+        project.getUsers().add(this);
+    }
+
+    // For managing the bidirectional relationship
+    public void removeProject(Project project) {
+        this.projects.remove(project);
+        project.getUsers().remove(this);
+    }
+
 }
