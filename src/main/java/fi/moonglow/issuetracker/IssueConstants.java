@@ -1,8 +1,8 @@
 package fi.moonglow.issuetracker;
 
-public class IssueConstants {
+public final class IssueConstants {
     
-    private IssueConstants() {};
+    private IssueConstants() {}
 
     public static final String BUG = "Bug";
     public static final String FEATURE = "Feature";
