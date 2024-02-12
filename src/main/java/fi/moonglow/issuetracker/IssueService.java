@@ -10,7 +10,7 @@ public interface IssueService {
      * @param project A project entity
      * @return All issues in the project
      */
-    public List<Issue> getIssues(Project project);
+    public List<Issue> getIssuesByProject(Project project);
 
     /**
      * Returns all the issues in a project.

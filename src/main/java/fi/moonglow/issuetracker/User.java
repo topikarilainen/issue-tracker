@@ -3,6 +3,8 @@ package fi.moonglow.issuetracker;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,10 +22,13 @@ public class User {
     private String username;
     private String fullName;
     @OneToMany(mappedBy = "creator")
+    @JsonIgnore
     private List<Issue> createdIssues;
     @OneToMany(mappedBy = "assignee")
+    @JsonIgnore
     private List<Issue> assignedIssues;
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Project> projects;
 
     public User() {}
