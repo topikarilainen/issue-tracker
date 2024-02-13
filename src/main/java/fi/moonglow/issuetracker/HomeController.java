@@ -19,11 +19,6 @@ public class HomeController {
         this.issueService = issueService;
     }
 
-    @GetMapping("/")
-    public String getHome() {
-        return "Welcome to the Home Page!";
-    }
-    
     @GetMapping("/status")
     public StatusResponse getStatus() {
         return new StatusResponse("Service running");
