@@ -4,7 +4,9 @@ A simple issue tracking application.
 
 ## Packaging
 
-Create a .jar file (e.g. issuetracker.jar):
+First transpile TypeScript source files to JavaScript by running `tsc --build`. The TypeScript compiler (tsc) is required.
+
+After transpiling .ts to .js, create a .jar file (e.g. issuetracker.jar):
 
 ### Windows
 
@@ -20,7 +22,9 @@ Run the jar file:
 
 `java -jar issuetracker.jar`
 
-## Viewing the sample data
+Access the application at http://localhost:8080.
+
+## Viewing the sample database
 
 An in-memory H2 database is used for development. When the application is running, you can view the H2 database console at http://localhost:8080/h2-console/. The connection settings are:
 
