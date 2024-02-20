@@ -2,11 +2,22 @@
 
 A simple issue tracking application.
 
+- H2
+- Java
+- Maven
+- React
+- REST
+- Spring Boot
+- TypeScript
+- Webpack
+
 ## Packaging
 
-First transpile TypeScript source files to JavaScript by running `tsc --build`. The TypeScript compiler (tsc) is required.
+Java and npm are required to build and run the application.
 
-After transpiling .ts to .js, create a .jar file (e.g. issuetracker.jar):
+First transpile and bundle the TSX and CSS source files to JavaScript by running `npx webpack`. This will transpile the TypeScript JSX into JavaScript and create src/main/resources/static/dist/bundle.js.
+
+After building bundle.js, create a .jar file (e.g. issuetracker.jar):
 
 ### Windows
 

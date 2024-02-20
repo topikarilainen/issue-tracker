@@ -1,11 +1,12 @@
 {
-    "compilerOptions": {
-        "target": "ES6",
-        // "jsx": "react", // Add this for React later
-        "allowSyntheticDefaultImports": true,
-        // "outDir": "" // Not setting outDir, build in same directory as source files
-    },
-    "include": [
-        "src/**/*"
-    ]
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "ES6",
+    "target": "ES6",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": false,
+    "moduleResolution": "node"
+  }
 }
