@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Trebuchet MS", Arial, sans-serif;
+}
+
+.app-grid-container {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-areas:
+		'header header'
+		'sidebar main';
+	grid-template-rows: auto;
+	grid-template-columns: 1fr 5fr;
+	min-height: 100vh;
+}
+
+.app-grid-container__header {
+	grid-area: header;
+    background-color: burlywood;
+	color: #222;
+}
+
+.app-grid-container__sidebar {
+	grid-area: sidebar;
+	background-color: #444;
+	color: white;
+}
+
+.app-grid-container__main-content {
+	grid-area: main;
+	background-color: #c8bb96;
+	color: #333;
+}
