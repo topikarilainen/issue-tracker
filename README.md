@@ -53,3 +53,11 @@ Parameters: projectAbbreviation - the abbreviation of the project. See the examp
 
 Example:
 http://localhost:8080/issues?projectAbbreviation=SIA
+
+### Get all projects:
+
+Endpoint: /projects<br/>
+Parameters: None
+
+Example:
+http://localhost:8080/projects
