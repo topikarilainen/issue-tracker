@@ -1,5 +1,6 @@
 package fi.moonglow.issuetracker;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
@@ -24,6 +25,7 @@ public class Issue {
     private String status;
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonBackReference
     private Project project;
 
     public Issue() {}
@@ -185,7 +187,9 @@ public class Issue {
         this.project = project;
     }
 
-    @JsonProperty("project")
+    // Show this in place of a project object in the serialized JSON representation.
+    // Consider refactoring this to use separate DTOs to keep entity classes uncoupled from serialization concerns.  
+    @JsonProperty("projectAbbreviation")
     public String getProjectAbbreviation() {
         return project != null ? project.getAbbreviation() : null;
     }
