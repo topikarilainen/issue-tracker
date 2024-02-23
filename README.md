@@ -1,6 +1,7 @@
 # issue-tracker
 
-A simple issue tracking application.
+A simple issue tracking application. 
+Status: :sun_with_face: Infrastructure in place. :construction: Application features under construction.  
 
 - H2
 - Java
