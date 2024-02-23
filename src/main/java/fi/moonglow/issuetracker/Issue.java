@@ -1,5 +1,7 @@
 package fi.moonglow.issuetracker;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -181,6 +183,11 @@ public class Issue {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    @JsonProperty("project")
+    public String getProjectAbbreviation() {
+        return project != null ? project.getAbbreviation() : null;
     }
 
 }

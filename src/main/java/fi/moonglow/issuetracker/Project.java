@@ -1,9 +1,6 @@
 package fi.moonglow.issuetracker;
 
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -24,7 +21,6 @@ public class Project {
     @Column(unique = true)
     private String abbreviation;
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-    @JsonIgnore
     private List<Issue> issues;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "project_users", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
