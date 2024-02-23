@@ -13,10 +13,12 @@ public class HomeController {
     
     // Dependency managed by constructor injection
     private final IssueService issueService;
+    private final ProjectService projectService;
 
     // Implicitly @Autowired as the only constructor method
-    public HomeController(IssueService issueService) {
+    public HomeController(IssueService issueService, ProjectService projectService) {
         this.issueService = issueService;
+        this.projectService = projectService;
     }
 
     @GetMapping("/status")
@@ -29,5 +31,9 @@ public class HomeController {
         return issueService.getIssuesByProjectAbbreviation(projectAbbreviation);
     }
     
-
+    @GetMapping("/projects")
+    public List<Project> getProjects() {
+        return projectService.getAllProjects();
+    }
+    
 }
