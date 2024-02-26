@@ -1,13 +1,17 @@
 package fi.moonglow.issuetracker;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.hibernate.annotations.NaturalId;
+import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,18 +25,24 @@ import jakarta.persistence.OneToMany;
 public class Project {
     private @Id @GeneratedValue Long id;
     private String name;
-    @Column(unique = true)
+    @NonNull
+    @NaturalId
     private String abbreviation;
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<Issue> issues;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "project_users", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "project_users", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "application_user_id"))
     private Set<User> users;
 
-    public Project() {}
+    public Project() {
+        abbreviation = "";
+    }
 
     public Project(String name, String abbreviation, List<Issue> issues, Set<User> users) {
+        if (abbreviation == null) {
+            throw new IllegalArgumentException("abbreviation cannot be null");
+        }
         this.name = name;
         this.abbreviation = abbreviation;
         this.issues = issues;
@@ -41,14 +51,7 @@ public class Project {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((abbreviation == null) ? 0 : abbreviation.hashCode());
-        result = prime * result + ((issues == null) ? 0 : issues.hashCode());
-        result = prime * result + ((users == null) ? 0 : users.hashCode());
-        return result;
+        return Objects.hashCode(abbreviation);
     }
 
     @Override
@@ -60,38 +63,18 @@ public class Project {
         if (getClass() != obj.getClass())
             return false;
         Project other = (Project) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        if (abbreviation == null) {
-            if (other.abbreviation != null)
-                return false;
-        } else if (!abbreviation.equals(other.abbreviation))
-            return false;
-        if (issues == null) {
-            if (other.issues != null)
-                return false;
-        } else if (!issues.equals(other.issues))
-            return false;
-        if (users == null) {
-            if (other.users != null)
-                return false;
-        } else if (!users.equals(other.users))
-            return false;
-        return true;
+        return Objects.equals(abbreviation, other.getAbbreviation());
     }
 
     @Override
     public String toString() {
-        return "Project [id=" + id + ", name=" + name + ", abbreviation=" + abbreviation + ", issues=" + issues
-                + ", users=" + users + "]";
+        int issueCount = issues.size();
+        String usersStr = "";
+        if (users != null) {
+            usersStr = "[" + users.stream().map(User::getUsername).collect(Collectors.joining(", ")) + "]";
+        }
+        return "Project [id=" + id + ", name=" + name + ", abbreviation=" + abbreviation + ", issues: " + issueCount
+                + ", users=" + usersStr + "]";
     }
 
     public Long getId() {
@@ -115,6 +98,9 @@ public class Project {
     }
 
     public void setAbbreviation(String abbreviation) {
+        if (abbreviation == null) {
+            throw new IllegalArgumentException("abbreviation cannot be null");
+        }
         this.abbreviation = abbreviation;
     }
 

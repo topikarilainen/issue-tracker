@@ -1,5 +1,7 @@
 package fi.moonglow.issuetracker;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,7 +30,8 @@ public class Issue {
     @JsonBackReference
     private Project project;
 
-    public Issue() {}
+    public Issue() {
+    }
 
     public Issue(String type, Integer priority, String title, String description, User creator, User assignee,
             String status, Project project) {
@@ -42,20 +45,24 @@ public class Issue {
         this.project = project;
     }
 
+    /**
+     * The natural key is a combination of the project abbreviation and the issue
+     * id, e.g. "SIA-42". Ideally, we would calculate the hash from these, but the
+     * issue id is not available until the issue is persisted (it is generated at
+     * persist time). Therefore the id is not guaranteed to be available for use in
+     * hash code calculation. More specifically, it changes from null to a number
+     * after persisting, which is a problem if it the issue is added to a set before
+     * the id is generated.
+     * 
+     * In this case we simply return a constant. This implementation is of course
+     * inefficient for large sets. If a more efficient alternative was needed, we
+     * could implement our own issue number generator, use a separate field for the
+     * issue number, and create the hash code with Objects.hash(project,
+     * issueNumber).
+     */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((priority == null) ? 0 : priority.hashCode());
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((creator == null) ? 0 : creator.hashCode());
-        result = prime * result + ((assignee == null) ? 0 : assignee.hashCode());
-        result = prime * result + ((status == null) ? 0 : status.hashCode());
-        result = prime * result + ((project == null) ? 0 : project.hashCode());
-        return result;
+        return 31;
     }
 
     @Override
@@ -67,52 +74,17 @@ public class Issue {
         if (getClass() != obj.getClass())
             return false;
         Issue other = (Issue) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (type == null) {
-            if (other.type != null)
-                return false;
-        } else if (!type.equals(other.type))
-            return false;
-        if (priority == null) {
-            if (other.priority != null)
-                return false;
-        } else if (!priority.equals(other.priority))
-            return false;
-        if (title == null) {
-            if (other.title != null)
-                return false;
-        } else if (!title.equals(other.title))
-            return false;
-        if (description == null) {
-            if (other.description != null)
-                return false;
-        } else if (!description.equals(other.description))
-            return false;
-        if (creator == null) {
-            if (other.creator != null)
-                return false;
-        } else if (!creator.equals(other.creator))
-            return false;
-        if (assignee == null) {
-            if (other.assignee != null)
-                return false;
-        } else if (!assignee.equals(other.assignee))
-            return false;
-        if (status == null) {
-            if (other.status != null)
-                return false;
-        } else if (!status.equals(other.status))
-            return false;
-        if (project == null) {
-            if (other.project != null)
-                return false;
-        } else if (!project.equals(other.project))
-            return false;
-        return true;
+        return Objects.equals(id, other.getId());
+    }
+
+    @Override
+    public String toString() {
+        String creatorStr = creator != null ? creator.getUsername() : "";
+        String assigneeStr = assignee != null ? assignee.getUsername() : "";
+        String projectStr = project != null ? project.getAbbreviation() : "";
+        return "Issue [id=" + id + ", type=" + type + ", priority=" + priority + ", title=" + title + ", description="
+                + description + ", creator=" + creatorStr + ", assignee=" + assigneeStr + ", status=" + status
+                + ", project=" + projectStr + "]";
     }
 
     public Long getId() {
@@ -188,7 +160,8 @@ public class Issue {
     }
 
     // Show this in place of a project object in the serialized JSON representation.
-    // Consider refactoring this to use separate DTOs to keep entity classes uncoupled from serialization concerns.  
+    // Consider refactoring this to use separate DTOs to keep entity classes
+    // uncoupled from serialization concerns.
     @JsonProperty("projectAbbreviation")
     public String getProjectAbbreviation() {
         return project != null ? project.getAbbreviation() : null;

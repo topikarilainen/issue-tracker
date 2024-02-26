@@ -1,11 +1,11 @@
 package fi.moonglow.issuetracker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class DemoDataLoader implements CommandLineRunner {
@@ -22,6 +22,7 @@ public class DemoDataLoader implements CommandLineRunner {
         }
 
         @Override
+        @Transactional
         public void run(String... args) {
                 // Initializes the database with demo data.
 
@@ -38,9 +39,14 @@ public class DemoDataLoader implements CommandLineRunner {
 
                 // Create projects
                 Project enterpriseProject = new Project("SAP Integration for ACME", "SIA", new ArrayList<>(),
-                                new HashSet<>(Arrays.asList(mcducscr, messilio, swifttay)));
+                                new HashSet<>());
+                enterpriseProject.addUser(mcducscr);
+                enterpriseProject.addUser(messilio);
+                enterpriseProject.addUser(swifttay);
                 Project webProject = new Project("Online Tea Shop", "OTS", new ArrayList<>(),
-                                new HashSet<>(Arrays.asList(messilio, swifttay)));
+                                new HashSet<>());
+                webProject.addUser(messilio);
+                webProject.addUser(swifttay);
 
                 projectRepository.save(enterpriseProject);
                 projectRepository.save(webProject);
@@ -119,7 +125,7 @@ public class DemoDataLoader implements CommandLineRunner {
                                 "Page load times are unusually slow, impacting user experience", mcducscr, messilio,
                                 IssueConstants.OPEN, enterpriseProject));
 
-                // Create issues for Online Tea Shop 
+                // Create issues for Online Tea Shop
                 issueRepository.save(new Issue(IssueConstants.BUG, 1, "Login fails", "Login fails for all users.",
                                 messilio, messilio, IssueConstants.CLOSED, webProject));
                 issueRepository.save(new Issue(IssueConstants.BUG, 3, "Page loads slowly", "Takes several seconds.",

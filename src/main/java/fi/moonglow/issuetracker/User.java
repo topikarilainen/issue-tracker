@@ -1,11 +1,15 @@
 package fi.moonglow.issuetracker;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.hibernate.annotations.NaturalId;
+import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +22,8 @@ import jakarta.persistence.Table;
 @Table(name = "application_user")
 public class User {
     private @Id @GeneratedValue Long id;
-    @Column(unique = true)
+    @NonNull
+    @NaturalId
     private String username;
     private String fullName;
     @OneToMany(mappedBy = "creator")
@@ -31,10 +36,15 @@ public class User {
     @JsonIgnore
     private Set<Project> projects;
 
-    public User() {}
-    
+    public User() {
+        this.username = "";
+    }
+
     public User(String username, String fullName, List<Issue> createdIssues, List<Issue> assignedIssues,
             Set<Project> projects) {
+        if (username == null) {
+            throw new IllegalArgumentException("Username cannot be null");
+        }
         this.username = username;
         this.fullName = fullName;
         this.createdIssues = createdIssues;
@@ -44,15 +54,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
-        result = prime * result + ((fullName == null) ? 0 : fullName.hashCode());
-        result = prime * result + ((createdIssues == null) ? 0 : createdIssues.hashCode());
-        result = prime * result + ((assignedIssues == null) ? 0 : assignedIssues.hashCode());
-        result = prime * result + ((projects == null) ? 0 : projects.hashCode());
-        return result;
+        return Objects.hashCode(username);
     }
 
     @Override
@@ -64,43 +66,19 @@ public class User {
         if (getClass() != obj.getClass())
             return false;
         User other = (User) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (username == null) {
-            if (other.username != null)
-                return false;
-        } else if (!username.equals(other.username))
-            return false;
-        if (fullName == null) {
-            if (other.fullName != null)
-                return false;
-        } else if (!fullName.equals(other.fullName))
-            return false;
-        if (createdIssues == null) {
-            if (other.createdIssues != null)
-                return false;
-        } else if (!createdIssues.equals(other.createdIssues))
-            return false;
-        if (assignedIssues == null) {
-            if (other.assignedIssues != null)
-                return false;
-        } else if (!assignedIssues.equals(other.assignedIssues))
-            return false;
-        if (projects == null) {
-            if (other.projects != null)
-                return false;
-        } else if (!projects.equals(other.projects))
-            return false;
-        return true;
+        return Objects.equals(username, other.getUsername());
     }
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", username=" + username + ", fullName=" + fullName + ", createdIssues="
-                + createdIssues + ", assignedIssues=" + assignedIssues + ", projects=" + projects + "]";
+        int createdIssueCount = createdIssues != null ? createdIssues.size() : 0;
+        int assignedIssueCount = assignedIssues != null ? assignedIssues.size() : 0;
+        String projectsStr = "";
+        if (projects != null) {
+            projectsStr = "[" + projects.stream().map(Project::getAbbreviation).collect(Collectors.joining(", ")) + "]";
+        }
+        return "User [id=" + id + ", username=" + username + ", fullName=" + fullName + ", created issues: "
+                + createdIssueCount + ", assignedIssues: " + assignedIssueCount + ", projects=" + projectsStr + "]";
     }
 
     public Long getId() {
@@ -116,6 +94,9 @@ public class User {
     }
 
     public void setUsername(String username) {
+        if (username == null) {
+            throw new IllegalArgumentException("Username cannot be null");
+        }
         this.username = username;
     }
 
@@ -149,18 +130,6 @@ public class User {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
-    }
-
-    // For managing the bidirectional relationship
-    public void addProject(Project project) {
-        this.projects.add(project);
-        project.getUsers().add(this);
-    }
-
-    // For managing the bidirectional relationship
-    public void removeProject(Project project) {
-        this.projects.remove(project);
-        project.getUsers().remove(this);
     }
 
 }
