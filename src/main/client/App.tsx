@@ -8,10 +8,10 @@ export default function App() {
 	return (
 		<div className='app-grid-container'>
 			<header className='app-grid-container__header'>
-				<Header text='Application Header' />
+				<Header text='Issue Tracker' />
 			</header>
 			<div className='app-grid-container__sidebar'>
-				<Sidebar text='Hello from sidebar!'></Sidebar>
+				<Sidebar text='This is the sidebar...'></Sidebar>
 			</div>
 			<main className='app-grid-container__main-content'>
 				<MainContent></MainContent>
